@@ -3,7 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+    production: false,
+    hostCountries:'https://corona.lmao.ninja',
+    hostHistory:'https://corona.lmao.ninja/v2',
+    hostMap:'https://corona.lmao.ninja/v2/jhucsse'
 };
 
 /*
