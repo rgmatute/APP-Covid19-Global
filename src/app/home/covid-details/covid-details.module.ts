@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { CovidDetailsPageRoutingModule } from './covid-details-routing.module';
 
 import { CovidDetailsPage } from './covid-details.page';
+import { Covid19DetailsComponentComponent } from 'src/app/components/covid19-details-component/covid19-details-component.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,9 @@ import { CovidDetailsPage } from './covid-details.page';
     IonicModule,
     CovidDetailsPageRoutingModule
   ],
-  declarations: [CovidDetailsPage]
+  declarations: [
+    CovidDetailsPage,
+    Covid19DetailsComponentComponent
+  ]
 })
 export class CovidDetailsPageModule {}

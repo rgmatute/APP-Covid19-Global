@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Covid19Service } from 'src/app/services/covid19.service';
 import { Subscription } from 'rxjs';
 import { AlertController } from '@ionic/angular';
@@ -17,27 +17,14 @@ export class CovidDetailsPage implements OnInit {
     historySub: Subscription;
     activateRouterSub: Subscription;
 
-    history:any={};
-    historyCategory:String[] = [];
-    public historyCases:Number[] = [];
-    historyDeaths:Number[] = [];
-    historyRecovered:Number[] = [];
-    casesChar:any[]=[];
-    casesToday:any[]=[];
-    cases:any[]=[];
-    incrementosRecientes:any[]=[];
-
-    countrie: any = {
-        countryInfo:{
-            flag:""
-        }
-    };
+    flag:String;
+    country:String;
 
     constructor(
         private activateRouter:ActivatedRoute, 
         private covidService:Covid19Service,
-        private alertController: AlertController,
-        ) { }
+        private alertController: AlertController
+        ) {  }
 
     ionViewDidEnter() {
         //this.barChartPopulation();
@@ -45,7 +32,7 @@ export class CovidDetailsPage implements OnInit {
         //this.pieChartBrowser();
     }
 
-    historialChar(){
+    historialChar(data:any,category:any){
         //this.highcharts1 = HighCharts.chart('ddd',{});
         let chartOptions:any = {
             chart: {
@@ -57,29 +44,24 @@ export class CovidDetailsPage implements OnInit {
             legend: {
                 symbolWidth: 40
             },
-        
             title: {
                 text: 'Historia Covid-19'
             },
-        
             yAxis: {
                 title: {
                     text: ''
                 }
             },
-        
             xAxis: {
                 /*title: {
                     text: 'Dates'
                 },*/
-                categories: this.historyCategory,
+                categories: category,
             },
-        
             tooltip: {
                 valueSuffix: '',
                 split: true
             },
-        
             plotOptions: {
                 series: {
                     marker: {
@@ -88,49 +70,13 @@ export class CovidDetailsPage implements OnInit {
                     cursor: 'pointer'
                 }
             },
-        
-            series: [
-                {
-                    name: 'Cases',
-                    data: this.historyCases,
-                }, {
-                    name: 'Deaths',
-                    data: this.historyDeaths,
-                }, {
-                    name: 'Recovered',
-                    data: this.historyRecovered,
-                }
-            ],
-        
-            responsive: {
-                rules: [{
-                    condition: {
-                        maxWidth: 550
-                    },
-                    chartOptions: {
-                        legend: {
-                            itemWidth: 150
-                        },
-                        xAxis: {
-                            categories: this.historyCategory
-                        },
-                        yAxis: {
-                            title: {
-                                enabled: true
-                            },
-                            labels: {
-                                format: '{value}'
-                            }
-                        }
-                    }
-                }]
-            }
+            series: data,
         };
 
         HighCharts.chart('historialChar',chartOptions);
     }
 
-    casesPieCharEvent() {
+    casesPieCharEvent(data:any) {
         let chartOptions:any={
             chart: {
                 type: 'pie'
@@ -155,20 +101,21 @@ export class CovidDetailsPage implements OnInit {
                     cursor: 'pointer',
                     dataLabels: {
                         enabled: true,
-                        format: '<b>{point.name}</b>: <h1>{point.percentage:.2f}%</h1>'
+                        format: '<b>{point.name}</b>: <h1>{point.percentage:.2f}%</h1>',
+                        //distance:8
                     }
                 }
             },
             series: [{
                 name: 'Coronavirus',
                 colorByPoint: true,
-                data: this.casesChar
+                data: data
             }]
         }
         HighCharts.chart('casesChart', chartOptions);
     }
 
-    casesTodayEvent(){
+    casesTodayEvent(data:any){
         let chartOptions:any={
             chart: {
                 type: 'column'
@@ -217,14 +164,14 @@ export class CovidDetailsPage implements OnInit {
             series: [{
                     name: "Coronavirus",
                     colorByPoint: true,
-                    data: this.casesToday
+                    data: data
                 }
             ]
         }
         HighCharts.chart('casesToday', chartOptions);
     }
 
-    casesEvent(){
+    casesEvent(data:any){
         let chartOptions:any={
             chart: {
                 type: 'column'
@@ -271,14 +218,14 @@ export class CovidDetailsPage implements OnInit {
             series: [{
                     name: "Coronavirus",
                     colorByPoint: true,
-                    data: this.cases
+                    data: data
                 }
             ]
         }
         HighCharts.chart('cases', chartOptions);
     }
 
-    incrementosRecientesEvent(){
+    incrementosRecientesEvent(data:any){
         let chartOptions:any={
             chart: {
                 type: 'line'
@@ -312,7 +259,7 @@ export class CovidDetailsPage implements OnInit {
                     enableMouseTracking: true
                 }
             },
-            series: this.incrementosRecientes
+            series: data
         };
         HighCharts.chart('incrementosRecientes', chartOptions);
         
@@ -326,120 +273,131 @@ export class CovidDetailsPage implements OnInit {
             this.countrieSub = this.covidService.getCountrie(countrieName)
             .subscribe(
                 data => this.processDetailtEvent(data),
-                error => this.stopDetailLoading(-1,error),
-                () => this.stopDetailLoading(0,'onComplete')
+                error => this.errorDetailLoading(-1,error),
+                () => this.errorDetailLoading(0,'onComplete')
             );
             // Obtener historia
             this.historySub = this.covidService.getHistory(countrieName).subscribe(
                 data => this.processHistoryEvent(data),
-                error => this.stopHistoryLoading(-1,error),
-                () => this.stopHistoryLoading(0,'onComplete')
+                error => this.errorHistoryLoading(-1,error),
+                () => this.errorHistoryLoading(0,'onComplete')
             );
         });
     }
 
-    processDetailtEvent(data:any){
-        this.countrie = data;
-        localStorage.setItem('detail',JSON.stringify(this.countrie));
+    processDetailtEvent(countrie:any){
+        this.flag = countrie.countryInfo.flag;
+        this.country = countrie.country;
         // Casos para el porcentaje
-        this.casesChar = [{
+        let casesChar = [{
             name: 'Confirmed Cases',
-            y: this.countrie.cases
+            y: countrie.cases,
         },{
             name: 'Deaths',
-            y: this.countrie.deaths,
+            y: countrie.deaths,
         },{
             name: 'Recovered Cases',
-            y: this.countrie.recovered,
+            y: countrie.recovered,
         },{
             name: 'Active Cases',
-            y: this.countrie.active,
+            y: countrie.active,
         },{
             name: 'Critical Cases',
-            y: this.countrie.critical,
+            y: countrie.critical,
         }];
         // Casos Nuevos
-        this.casesToday = [{
+        let casesToday = [{
             name: 'Confirmed Cases',
-            y: this.countrie.todayCases
+            y: countrie.todayCases
         },{
             name: 'Deaths',
-            y: this.countrie.todayDeaths,
+            y: countrie.todayDeaths,
         }];
         // Todos los casos
-        this.cases = [{
+        let cases = [{
             name: 'Confirmed Cases',
-            y: this.countrie.cases
+            y: countrie.cases
         },{
             name: 'Active Cases',
-            y: this.countrie.active,
+            y: countrie.active,
         },{
             name: 'Deaths',
-            y: this.countrie.deaths,
+            y: countrie.deaths,
         },{
             name: 'Recovered Cases',
-            y: this.countrie.recovered,
+            y: countrie.recovered,
         },{
             name: 'Critical Cases',
-            y: this.countrie.critical,
+            y: countrie.critical,
         }];
         // Incrementos recientes
-        this.incrementosRecientes.push(
+        let incrementosRecientes = [
             {
-                name: 'Incremento del ' + parseFloat(String((this.countrie.todayCases/this.countrie.cases)*100)).toFixed(1) + '% en Casos confirmados',
-                data: [(this.countrie.cases-this.countrie.todayCases), this.countrie.cases],
+                name: 'Incremento del ' + parseFloat(String((countrie.todayCases/countrie.cases)*100)).toFixed(1) + '% en Casos confirmados',
+                data: [(countrie.cases-countrie.todayCases), countrie.cases],
             }, {
-                name: 'Incremento del ' + parseFloat(String((this.countrie.todayDeaths/this.countrie.deaths)*100)).toFixed(1) + '% en Muertes',
-                data: [(this.countrie.deaths-this.countrie.todayDeaths), this.countrie.deaths],
+                name: 'Incremento del ' + parseFloat(String((countrie.todayDeaths/countrie.deaths)*100)).toFixed(1) + '% en Muertes',
+                data: [(countrie.deaths-countrie.todayDeaths), countrie.deaths],
             }
-        );
-        this.casesPieCharEvent();
-        this.casesTodayEvent();
-        this.casesEvent();
-        this.incrementosRecientesEvent();
+        ];
+        this.casesPieCharEvent(casesChar);
+        this.casesTodayEvent(casesToday);
+        this.casesEvent(cases);
+        this.incrementosRecientesEvent(incrementosRecientes);
     }
 
-    processHistoryEvent(data:any){
-        this.history = data;
-        localStorage.setItem('history',JSON.stringify(this.history));
+    processHistoryEvent(history:any){
         // Obtener los valores
-        for(let key in this.history.timeline.cases){ 
-            this.historyCategory.push(key);
-            this.historyCases.push(this.history.timeline.cases[key]);
+        let historyCategory:any=[];
+        let historyCases:any=[];
+        let historyDeaths:any=[];
+        let historyRecovered:any=[];
+        for(let key in history.timeline.cases){ 
+            historyCategory.push(key);
+            historyCases.push(history.timeline.cases[key]);
         }
-        for(let key in this.history.timeline.deaths){ 
-            this.historyDeaths.push(this.history.timeline.deaths[key]);
+        for(let key in history.timeline.deaths){ 
+            historyDeaths.push(history.timeline.deaths[key]);
         }
-        for(let key in this.history.timeline.recovered){ 
-            this.historyRecovered.push(this.history.timeline.recovered[key]);
+        for(let key in history.timeline.recovered){ 
+            historyRecovered.push(history.timeline.recovered[key]);
         }
-        this.historialChar();
-    }
-
-    stopDetailLoading(code:Number,message:String){
-        if(code === -1){
-            this.presentAlertOffline();
-            let caching = localStorage.getItem('detail');
-            if(caching){
-                this.processDetailtEvent(JSON.parse(caching));
+        let historyData = [
+            {
+                name: 'Cases',
+                data: historyCases,
+            }, {
+                name: 'Deaths',
+                data: historyDeaths,
+            }, {
+                name: 'Recovered',
+                data: historyRecovered,
             }
-        }
+        ];
+
+        // Mandar a graficar
+        this.historialChar(historyData,historyCategory);
     }
 
-    stopHistoryLoading(code:Number,message:String){
+    errorDetailLoading(code:Number,message:String){
         if(code === -1){
-            // this.presentAlertOffline();
-            let caching = localStorage.getItem('history');
-            if(caching){
-                this.processHistoryEvent(JSON.parse(caching));
-            }
+            //this.presentAlertOffline('');
+            // message error
         }
     }
 
-    async presentAlertOffline() {
+    errorHistoryLoading(code:Number,message: any){
+        if(code === -1){
+            // message error
+            this.presentAlertOffline('Country not found or doesn\'t have any historical data');
+        }
+    }
+
+    async presentAlertOffline(message:String) {
         const alert = await this.alertController.create({
             header: 'Ups!',
-            message: 'Necesita una conexión a internet para ver información actualizada',
+            message: message+'',
+            // 'Necesita una conexión a internet para ver información actualizada'
             buttons: [{
                 text:'Cancelar',
                 role:'cancel',

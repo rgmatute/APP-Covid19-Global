@@ -1,53 +1,13 @@
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="start">
-            <ion-back-button (click)="notBack()" defaultHref="/home"></ion-back-button>
+            <ion-back-button (click)="notBack()" defaultHref="/covid19"></ion-back-button>
         </ion-buttons>
         <ion-title>Info</ion-title>
     </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <ion-card class="ion-text-center">
-        <ion-card-header>
-            <ion-card-title>APP Developed by</ion-card-title>
-            <ion-card-subtitle>Ronny Gabriel Matute G.</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-            <h1 color="success">Whatsapp</h1>
-            <p>+593 981851214</p>
-            <h1 color="success">GitHub</h1>
-            <p><a href="https://github.com/rgmatute" target="_blank">To go</a></p>
-            <h1 color="success">Facebook</h1>
-            <p><a href="https://www.facebook.com/TelematicoMR" target="_blank">To go</a></p>
-        </ion-card-content>
-    </ion-card>
-    <ion-card class="ion-text-center">
-        <ion-card-header>
-            <ion-card-title>Api Rest Developed by</ion-card-title>
-            <ion-card-subtitle>NovelCOVID</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-            <h1 color="success">GitHub</h1>
-            <p><a href="https://github.com/novelcovid/api" target="_blank">To go</a></p>
-        </ion-card-content>
-    </ion-card>
-    <ion-card class="ion-text-center">
-        <ion-card-content>
-            <h1 color="success">Donate by Paypal</h1>
-            <p><a href="https://www.paypal.me/TelematicoTools/10" target="_blank">Donate $10.00</a></p>
-            <p><a href="https://www.paypal.me/TelematicoTools/5" target="_blank">Donate $5.00</a></p>
-            <p><a href="https://www.paypal.me/TelematicoTools/3" target="_blank">Donate $3.00</a></p>
-            <p><a href="https://www.paypal.me/TelematicoTools/1" target="_blank">Donate $1.00</a></p>
-        </ion-card-content>
-    </ion-card>
-    <ion-card class="ion-text-center">
-        <ion-card-header>
-            <ion-card-title>Version</ion-card-title>
-            <ion-card-subtitle>1.0.1</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-            
-        </ion-card-content>
-    </ion-card>
+    <app-autor-component></app-autor-component>
 </ion-content>
+

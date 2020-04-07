@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { AutorPageRoutingModule } from './autor-routing.module';
 
 import { AutorPage } from './autor.page';
+import { AutorComponentComponent } from '../components/autor-component/autor-component.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,9 @@ import { AutorPage } from './autor.page';
     IonicModule,
     AutorPageRoutingModule
   ],
-  declarations: [AutorPage]
+  declarations: [
+    AutorPage,
+    AutorComponentComponent
+  ]
 })
 export class AutorPageModule {}

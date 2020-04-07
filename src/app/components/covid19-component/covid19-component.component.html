@@ -1,0 +1,27 @@
+<ion-list *ngIf="countries.length>0">
+  <ion-item *ngFor="let countrie of countries" [routerLink]="['/covid19',countrie.country]">
+      <ion-avatar class="ion-text-right" slot="start">
+          <ion-img [src]="countrie.countryInfo.flag"></ion-img>
+      </ion-avatar>
+      <ion-label>
+          <h2>{{ countrie.country }}</h2>
+          <p>{{ countrie.casesPerOneMillion }} Cases Per One Million</p>
+          <p>{{ countrie.deathsPerOneMillion }} Deaths Per One Million</p>
+      </ion-label>
+      <ion-badge color="tertiary" slot="end">
+          {{ countrie.cases }} Confirmed
+      </ion-badge>
+  </ion-item>
+</ion-list>
+
+<ion-list *ngIf="countries.length === 0">
+<ion-item *ngFor="let item of [0,1,2,3,4,5,6,7,8,9]">
+  <ion-avatar slot="start">
+      <ion-skeleton-text animated></ion-skeleton-text>
+  </ion-avatar>
+  <ion-label>
+      <h2> <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text> </h2>
+      <p> <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text> </p>
+  </ion-label>
+</ion-item>
+</ion-list>

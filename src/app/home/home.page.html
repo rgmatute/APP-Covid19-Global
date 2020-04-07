@@ -1,8 +1,6 @@
 <ion-header [translucent]="true">
     <ion-toolbar>
-        <ion-title>
-            COVID-19
-        </ion-title>
+        <ion-title>COVID-19</ion-title>
         <ion-searchbar animated (ionChange)="searchEvent($event)" slot="end" *ngIf="isSearch"></ion-searchbar>
         <ion-buttons slot="end">
             <ion-button (click)="ngOnInit()">
@@ -11,10 +9,6 @@
             <ion-button (click)="searchEvent(null)">
                 <ion-icon name="search-outline"></ion-icon>
             </ion-button>
-            <!-- 
-            <ion-button>
-                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-            </ion-button>-->
             <ion-button [routerLink]="['/autor']">
                 <ion-icon name="information-circle-outline"></ion-icon>
             </ion-button>
@@ -23,31 +17,5 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-    <ion-list *ngIf="countries.length>0">
-        <ion-item *ngFor="let countrie of countries | filtro: textoBuscar" [routerLink]="['/home',countrie.country]">
-            <ion-avatar class="ion-text-right" slot="start">
-                <ion-img [src]="countrie.countryInfo.flag"></ion-img>
-            </ion-avatar>
-            <ion-label>
-                <h2>{{ countrie.country }}</h2>
-                <p>{{ countrie.casesPerOneMillion }} Cases Per One Million</p>
-                <p>{{ countrie.deathsPerOneMillion }} Deaths Per One Million</p>
-            </ion-label>
-            <ion-badge color="tertiary" slot="end">
-                {{ countrie.cases }} Confirmed
-            </ion-badge>
-        </ion-item>
-    </ion-list>
-
-  <ion-list *ngIf="countries.length === 0">
-    <ion-item *ngFor="let item of [0,1,2,3,4,5,6,7,8,9]">
-        <ion-avatar slot="start">
-            <ion-skeleton-text animated></ion-skeleton-text>
-        </ion-avatar>
-        <ion-label>
-            <h2> <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text> </h2>
-            <p> <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text> </p>
-        </ion-label>
-      </ion-item>
-  </ion-list>
+    <app-covid19-component [countries]="countries | filtro: textoBuscar: 'country'"></app-covid19-component>
 </ion-content>

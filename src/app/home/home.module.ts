@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
 import { PipesModule } from '../pipes/pipes.module';
+import { Covid19ComponentComponent } from '../components/covid19-component/covid19-component.component';
 
 @NgModule({
   imports: [
@@ -20,6 +21,9 @@ import { PipesModule } from '../pipes/pipes.module';
       }
     ])
   ],
-  declarations: [HomePage]
+  declarations: [
+    HomePage,
+    Covid19ComponentComponent
+  ]
 })
 export class HomePageModule {}

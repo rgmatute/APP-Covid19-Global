@@ -23,7 +23,7 @@ export class HomePage {
     countriesSub: Subscription;
     countries:any[] = [];
     isSearch:Boolean=false;
-    textoBuscar:String='';
+    textoBuscar:string='';
 
     constructor(
         private covidService: Covid19Service,
@@ -65,11 +65,13 @@ export class HomePage {
         this.getAllCountries();
         this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
             // Cuando se desconecta guardamos la la informacion en cache
-            localStorage.setItem('countries',JSON.stringify(this.countries));
+            // localStorage.setItem('countries',JSON.stringify(this.countries));
+            console.log('Red desconectada');
+            this.presentAlertOffline('You have disconnected the internet!');
         });
         this.connectSubscription = this.network.onConnect().subscribe(() => {
             // Cuando se conecta actualizamos la cache guardamos la la informacion en cache
-            console.log('conectado');
+            console.log('Red conectada');
             this.getAllCountries();
         });
     }
@@ -78,25 +80,21 @@ export class HomePage {
         this.countriesSub = this.covidService.getAllCountries()
         .subscribe(
             data => this.cachingEasyEvent(data),
-            error => this.stopLoading(-2,error),
-            () => this.stopLoading(0,'onComplete')
+            error => this.errorCountries(-2,error),
+            () => this.errorCountries(0,'onComplete')
         );
     }
 
     cachingEasyEvent(contries:any){
         this.countries = contries.sort((x,y)=>{ return x.cases - y.cases }).reverse();
-        localStorage.setItem('countries',JSON.stringify(this.countries));
+        // localStorage.setItem('countries',JSON.stringify(this.countries));
     }
 
-    stopLoading(code:Number,message:String){
-        // this.dismiss()
+    errorCountries(code:Number,message:String){
         if(code === -1){
-            this.presentAlertOffline();
-            let caching = localStorage.getItem('countries');
-            if(caching){
-                this.countries = JSON.parse(caching);
-            }
+            // mensaje de error
         }
+        //this.dismiss();
     }
 
     async present() {
@@ -110,10 +108,11 @@ export class HomePage {
         return await this.loadingController.dismiss();
     }
 
-    async presentAlertOffline() {
+    async presentAlertOffline(message:any) {
         const alert = await this.alertController.create({
             header: 'Ups!',
-            message: 'Necesita una conexión a internet para ver información actualizada',
+            message: message,
+            // 'Necesita una conexión a internet para ver información actualizada'
             buttons: [{
                 text:'Cancelar',
                 role:'cancel',

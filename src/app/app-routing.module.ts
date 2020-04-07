@@ -2,9 +2,10 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '', redirectTo: 'covid19', pathMatch: 'full' },
+  { path: 'covid19', redirectTo: 'covid19', pathMatch: 'full' },
   {
-    path:'home', 
+    path:'covid19', 
     children:[
         {
             path:"",
@@ -18,7 +19,7 @@ const routes: Routes = [
   {
     path: 'autor',
     loadChildren: () => import('./autor/autor.module').then( m => m.AutorPageModule)
-  },
+  }
 ];
 
 @NgModule({
